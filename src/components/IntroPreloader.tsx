@@ -1,175 +1,278 @@
-import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
+import gsap from 'gsap';
 
-const letterFall = keyframes`
-  0% {
-    opacity: 0;
-    transform: translateY(-90px) rotate(-14deg) scale(0.5);
-    filter: blur(8px);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(12px) rotate(3deg) scale(1.08);
-    filter: blur(0px);
-  }
-  75% {
-    transform: translateY(-5px) rotate(-1deg) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0px) rotate(0deg) scale(1);
-    filter: blur(0px);
-  }
-`;
-
-const lineExpand = keyframes`
-  0% {
-    width: 0%;
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    width: 100%;
-    opacity: 1;
-  }
-`;
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const Overlay = styled.div<{ $isExiting: boolean; $isHidden: boolean }>`
+const Overlay = styled.div`
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   background: #08090d;
   z-index: 999999;
-  display: ${({ $isHidden }) => ($isHidden ? 'none' : 'flex')};
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   overflow: hidden;
   user-select: none;
-  transform: ${({ $isExiting }) => ($isExiting ? 'translateY(-100%)' : 'translateY(0%)')};
-  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+  pointer-events: auto;
 `;
 
-const ContentBox = styled.div`
+const AmbientGlow = styled.div`
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    transparent 70%
+  );
+  filter: blur(100px);
+  pointer-events: none;
+`;
+
+const BgGrid = styled.div`
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(circle at center, black 50%, transparent 85%);
+  pointer-events: none;
+`;
+
+const SpiralViewport = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  overflow: hidden;
+`;
+
+const MainContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .spiral-char {
+    position: absolute;
+    font-family: 'JetBrains Mono', 'Plus Jakarta Sans', monospace;
+    font-size: clamp(0.75rem, 1.6vw, 1.4rem);
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
+    user-select: none;
+    pointer-events: none;
+    transform-origin: center center;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+    white-space: nowrap;
+
+    &.highlight {
+      color: #ffffff;
+      text-shadow: 0 0 18px rgba(255, 255, 255, 0.7);
+    }
+  }
+`;
+
+const FinalHeroTitle = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
-  position: relative;
-  padding: 0 1.5rem;
-`;
-
-const NameRow = styled.h1`
-  font-size: clamp(3.2rem, 11vw, 8.5rem);
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  display: flex;
-  margin-bottom: 1.25rem;
-  color: #ffffff;
-`;
-
-const Letter = styled.span<{ $delay: number }>`
-  display: inline-block;
   opacity: 0;
-  animation: ${letterFall} 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  animation-delay: ${({ $delay }) => $delay}ms;
-
-  &.accent {
-    color: #10b981;
-  }
+  z-index: 10;
+  pointer-events: none;
+  width: 100vw;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
 `;
 
-const SubtitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+const FinalName = styled.h1`
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(2rem, 7.5vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: clamp(0.06em, 1.2vw, 0.2em);
+  line-height: 1.05;
+  color: #ffffff;
+  text-shadow: 0 10px 40px rgba(255, 255, 255, 0.35);
+  margin-bottom: 0.75rem;
+  white-space: nowrap;
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+`;
+
+const FinalSubtitle = styled.p`
   font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(0.72rem, 2vw, 0.875rem);
+  font-size: clamp(0.68rem, 1.6vw, 0.88rem);
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: clamp(0.06em, 0.8vw, 0.18em);
   text-transform: uppercase;
   color: #94a3b8;
-  opacity: 0;
-  animation: ${fadeIn} 0.6s ease forwards;
-  animation-delay: 0.65s;
+  text-align: center;
+  line-height: 1.4;
+  text-wrap: balance;
+  width: 100%;
 `;
 
-const ProgressTrack = styled.div`
-  width: 140px;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  margin-top: 1.75rem;
-  overflow: hidden;
-  position: relative;
-  opacity: 0;
-  animation: ${fadeIn} 0.5s ease forwards;
-  animation-delay: 0.75s;
-
-  @media (min-width: 640px) {
-    width: 200px;
-  }
-`;
-
-const ProgressFill = styled.div`
-  height: 100%;
-  background: linear-gradient(90deg, #10b981, #38bdf8);
-  border-radius: 999px;
-  animation: ${lineExpand} 1.1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-  animation-delay: 0.8s;
-`;
-
-const StatusText = styled.span`
-  margin-top: 0.85rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  color: #64748b;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0;
-  animation: ${fadeIn} 0.5s ease forwards;
-  animation-delay: 0.9s;
-`;
+const WORD = 'SAKSHAM';
 
 export const IntroPreloader: React.FC = () => {
-  const [isExiting, setIsExiting] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const name = 'SAKSHAM';
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const mainRef = useRef<HTMLDivElement | null>(null);
+  const finalHeroRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // Lock scrolling while preloader is active
     document.body.style.overflow = 'hidden';
 
-    // Start curtain wipe up after letters and progress finish (1.9s)
-    const exitTimer = setTimeout(() => {
-      setIsExiting(true);
-      document.body.style.overflow = 'auto';
-    }, 1900);
+    const overlay = overlayRef.current;
+    const main = mainRef.current;
+    const finalHero = finalHeroRef.current;
 
-    // Completely remove overlay from render tree after exit slide completes (2.8s)
-    const hideTimer = setTimeout(() => {
-      setIsHidden(true);
-    }, 2850);
+    if (!overlay || !main || !finalHero) return;
+
+    // Dynamically calculate grid cell counts to fill 100vw x 100vh edge-to-edge
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const cellW = Math.max(30, Math.min(50, Math.floor(w / 24)));
+    const cellH = Math.max(28, Math.min(48, Math.floor(h / 18)));
+    const cols = Math.ceil(w / cellW) + 2;
+    const rows = Math.ceil(h / cellH) + 2;
+    const totalCells = cols * rows;
+
+    // Generate character elements to fill entire matrix
+    main.innerHTML = '';
+    const chars: HTMLSpanElement[] = [];
+
+    for (let i = 0; i < totalCells; i++) {
+      const char = WORD[i % WORD.length];
+      const span = document.createElement('span');
+      span.className = `spiral-char ${char === 'K' || char === 'M' ? 'highlight' : ''}`;
+      span.innerText = char;
+      main.appendChild(span);
+      chars.push(span);
+    }
+
+    // Master GSAP Timeline with exact mathematical centering and smooth transitions
+    const tl = gsap.timeline({
+      delay: 0.1,
+      onComplete: () => {
+        setIsHidden(true);
+        document.body.style.overflow = 'auto';
+      },
+    });
+
+    gsap.set(overlay, { yPercent: 0 });
+    gsap.set(main, { rotation: 0, opacity: 1, scale: 1 });
+    // Mathematical Centering: xPercent: -50, yPercent: -50 ensures 100% true center on any resolution
+    gsap.set(finalHero, {
+      xPercent: -50,
+      yPercent: -50,
+      top: '50%',
+      left: '50%',
+      opacity: 0,
+      scale: 0.92,
+    });
+    gsap.set(chars, { opacity: 0, x: 0, y: 0, scale: 0 });
+
+    // 1. Stage 1 (2.0s): Archimedean Polar Spiral Ingress (elastic.out)
+    tl.to(chars, {
+      opacity: 1,
+      x: (i) => (i / 2 + 10) * Math.cos(i * 5),
+      y: (i) => (i / 2 + 10) * Math.sin(i * 5),
+      scale: (i) => 0.5 + i / 600,
+      ease: 'elastic.out(1.2, 0.5)',
+      duration: 2.0,
+      stagger: 0.003,
+    });
+
+    // 2. Stage 2 (2.0s): Full-Viewport Edge-to-Edge Grid Distribution Matrix (power3.inOut)
+    tl.to(chars, {
+      x: (i) => (i % cols) * cellW - (cols * cellW) / 2 + cellW / 2,
+      y: (i) => Math.floor(i / cols) * cellH - (rows * cellH) / 2 + cellH / 2,
+      scale: (i) => 1 + (i % 5) * 0.05,
+      ease: 'power3.inOut',
+      duration: 2.0,
+      stagger: -0.002,
+    }, '+=0.1');
+
+    // 3. Stage 3 (2.0s): Kinetic Random Scatter & Rotate 360 (power2.inOut)
+    tl.to(chars, {
+      x: (i) => '+=' + gsap.utils.random(-i * 5 - 150, i * 5 + 150, 5),
+      y: (i) => '+=' + gsap.utils.random(-i * 5 - 100, i * 5 + 100, 5),
+      rotate: 360,
+      ease: 'power2.inOut',
+      duration: 2.0,
+      stagger: 0.002,
+    }, '+=0.1');
+
+    // 4. Stage 4 (3.0s): Secondary Spiral Recoil (power3.out)
+    tl.to(chars, {
+      opacity: 1,
+      x: (i) => (i / 2 + 20) * Math.cos(i * 5),
+      y: (i) => (i / 2 + 20) * Math.sin(i * 5),
+      scale: (i) => 0.5 + i / 600,
+      ease: 'power3.out',
+      duration: 3.0,
+      stagger: 0.003,
+    }, '+=0.1');
+
+    // 5 & 6. Stage 5 & 6 (3.0s): Silky Smooth 360° Stage Spin & Linear Snap Alignment
+    tl.to(main, {
+      rotation: 360,
+      ease: 'power3.inOut',
+      duration: 3.0,
+    }, '+=0.1');
+
+    tl.to(chars, {
+      x: (i) => ((i * 10) % 100) - 50,
+      y: 0,
+      scale: 1,
+      ease: 'power3.out',
+      duration: 2.5,
+      stagger: 0.002,
+    }, '<+0.3');
+
+    // 7. Stage 7 (1.6s): Gentle Dissolve & Velvet Centered Reveal of SAKSHAM
+    tl.to(main, {
+      opacity: 0,
+      scale: 0.8,
+      duration: 1.0,
+      ease: 'power2.inOut',
+    }, '+=0.2');
+
+    tl.to(finalHero, {
+      opacity: 1,
+      scale: 1,
+      duration: 1.2,
+      ease: 'power3.out',
+    }, '<+0.2');
+
+    // 8. Stage 8 (1.1s): Velvet Curtain Exit Wipe Upward after graceful 1.6s pause
+    tl.to(overlay, {
+      yPercent: -100,
+      duration: 1.1,
+      ease: 'power4.inOut',
+    }, '+=1.6');
 
     return () => {
-      clearTimeout(exitTimer);
-      clearTimeout(hideTimer);
+      tl.kill();
       document.body.style.overflow = 'auto';
     };
   }, []);
@@ -177,31 +280,17 @@ export const IntroPreloader: React.FC = () => {
   if (isHidden) return null;
 
   return (
-    <Overlay $isExiting={isExiting} $isHidden={isHidden} aria-hidden="true">
-      <ContentBox>
-        <NameRow>
-          {name.split('').map((char, index) => (
-            <Letter
-              key={index}
-              $delay={index * 90 + 150}
-              className={char === 'K' || char === 'M' ? 'accent' : ''}
-            >
-              {char}
-            </Letter>
-          ))}
-        </NameRow>
+    <Overlay ref={overlayRef} aria-hidden="true">
+      <BgGrid />
+      <AmbientGlow />
+      <SpiralViewport>
+        <MainContainer ref={mainRef} />
 
-        <SubtitleRow>
-          <span>Full-Stack & Distributed Systems</span>
-        </SubtitleRow>
-
-        <ProgressTrack>
-          <ProgressFill />
-        </ProgressTrack>
-
-        <StatusText>Initializing Systems...</StatusText>
-      </ContentBox>
+        <FinalHeroTitle ref={finalHeroRef}>
+          <FinalName>SAKSHAM</FinalName>
+          <FinalSubtitle>Full-Stack Engineer</FinalSubtitle>
+        </FinalHeroTitle>
+      </SpiralViewport>
     </Overlay>
   );
 };
-
