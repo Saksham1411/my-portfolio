@@ -255,11 +255,11 @@ export const Hero: React.FC<{ onOpenContact: () => void }> = ({ onOpenContact })
           <TitleClip>
             <HeroHed>
               <span className="word-inner">
-                Crafting <span className="accent-highlight">fluid web apps</span> on the front,
+                Crafting <span className="accent-highlight">fluid web apps</span> by day,
               </span>
               <br />
               <span className="word-inner" style={{ animationDelay: '0.12s' }}>
-                scaling <span className="accent-highlight-alt">distributed backends & MCP AI</span> underneath.
+                taming <span className="accent-highlight-alt">distributed backends & AI agents</span> by night.
               </span>
             </HeroHed>
           </TitleClip>
