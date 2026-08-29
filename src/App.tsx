@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { useThemeState, ThemeContext } from './hooks/useTheme';
 import { GlobalStyles } from './styles/GlobalStyles';
+import { IntroPreloader } from './components/IntroPreloader';
 import { CustomCursor } from './components/CustomCursor';
 import { Navigation } from './components/Navigation';
 import { Hero } from './components/Hero';
@@ -24,6 +25,7 @@ export const App: React.FC = () => {
     <ThemeContext.Provider value={{ theme, mode, toggleTheme }}>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
+        <IntroPreloader />
         <CustomCursor />
 
         <Navigation onOpenContact={() => setContactOpen(true)} />
