@@ -202,7 +202,7 @@ export const Footer: React.FC = () => {
           <RightLinks>
             <TimePill>
               <Clock size={13} color="#10B981" />
-              <span>Fazilka, India (IST): {indiaTime || 'Loading...'}</span>
+              <span>Gurugram, India (IST): {indiaTime || 'Loading...'}</span>
             </TimePill>
 
             <SocialRow>

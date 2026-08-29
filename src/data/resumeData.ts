@@ -43,7 +43,7 @@ export const RESUME_DATA = {
   name: 'SAKSHAM',
   role: 'Full-Stack Software Engineer',
   specialization: 'Distributed Systems, High-Scale Microservices & Platform Infrastructure',
-  location: 'Fazilka, Punjab, India',
+  location: 'Gurugram, India',
   email: 'saksham.gupta1411@gmail.com',
   github: 'https://github.com/Saksham1411',
   linkedin: 'https://linkedin.com/in/saksham1411',
@@ -62,9 +62,8 @@ export const RESUME_DATA = {
   stats: [
     { label: 'Daily Logs Handled', value: '1M+' },
     { label: 'Latency Optimization', value: '35%' },
-    { label: 'Internal Devs on MCP Gateway', value: '50+' },
+    { label: 'Microservices Migrated', value: '8+' },
     { label: 'Academic CGPA', value: '9.70' },
-    { label: 'Production Microservices', value: '8+' },
     { label: 'Automated Test Suites', value: '120+' },
   ],
 

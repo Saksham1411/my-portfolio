@@ -15,11 +15,15 @@ const softLandingGlow = keyframes`
   }
 `;
 
-/* Pinned Scroll Stage with calibrated height */
+/* Pinned Scroll Stage with extended scroll time */
 const ScrollStage = styled.section`
-  height: 170vh;
+  height: 270vh;
   position: relative;
   border-bottom: 1px solid ${({ theme }) => theme.borderSubtle};
+
+  @media (min-width: 768px) {
+    height: 300vh;
+  }
 `;
 
 const StickyViewport = styled.div`

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { RESUME_DATA } from '../data/resumeData';
 import { HeroCanvas } from './HeroCanvas';
-import { ArrowDown, Copy, Check, Sparkles, Layers } from 'lucide-react';
+import { ArrowDown, Copy, Check, Sparkles } from 'lucide-react';
 
 const slideUp = keyframes`
   0% {
@@ -25,6 +25,29 @@ const pulse = keyframes`
     opacity: 0.6;
   }
 `;
+
+const pillFadeIn = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const PUNCHY_PHRASES = [
+  'Latency is my personal enemy',
+  '99.99% uptime · 100% intentional',
+  'Scaled to millions, tuned for milliseconds',
+  'Breaking monoliths · Slashing cloud bills',
+  'Tested in production · Survived with style',
+  'Less code, more throughput',
+  'Built to scale, engineered to flex',
+  'Zero downtime, zero excuses',
+  'Turning complex distributed chaos into clean APIs',
+];
 
 const HeroSection = styled.section`
   position: relative;
@@ -81,152 +104,160 @@ const StatusDot = styled.span`
   animation: ${pulse} 2s infinite ease-in-out;
 `;
 
+const DynamicPillText = styled.span`
+  display: inline-block;
+  animation: ${pillFadeIn} 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+`;
+
 const TitleClip = styled.div`
   overflow: hidden;
-  margin-bottom: 0.4rem;
 `;
 
 const HeroHed = styled.h1`
-  font-size: clamp(1.85rem, 5.8vw, 4.8rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
+  font-size: clamp(2.4rem, 5.5vw, 4.75rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
   color: ${({ theme }) => theme.textPrimary};
   margin-bottom: 1.5rem;
-  overflow-wrap: break-word;
-  word-break: break-word;
 
   .word-inner {
     display: inline-block;
-    animation: ${slideUp} 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: ${slideUp} 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .accent-highlight {
-    background: linear-gradient(135deg, ${({ theme }) => theme.accentEmerald}, ${({ theme }) => theme.accentCyan});
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: ${({ theme }) => theme.accentEmerald};
   }
 
   .accent-highlight-alt {
-    background: linear-gradient(135deg, ${({ theme }) => theme.accentCyan}, ${({ theme }) => theme.accentViolet});
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: ${({ theme }) => theme.accentCyan};
+  }
+
+  @media (min-width: 768px) {
+    margin-bottom: 2rem;
   }
 `;
 
-const HeroSub = styled.p`
-  font-size: clamp(0.95rem, 2.2vw, 1.35rem);
+const SubText = styled.p`
+  font-size: clamp(1rem, 2vw, 1.25rem);
   line-height: 1.6;
   color: ${({ theme }) => theme.textSecondary};
-  max-width: 860px;
+  max-width: 680px;
   margin-bottom: 2.25rem;
-  letter-spacing: -0.01em;
+  font-weight: 450;
 
-  strong {
-    color: ${({ theme }) => theme.textPrimary};
-    font-weight: 600;
+  @media (min-width: 768px) {
+    margin-bottom: 3rem;
   }
+`;
+
+const ProofStrip = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2.25rem;
+  margin-bottom: 2.5rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid ${({ theme }) => theme.borderSubtle};
+  border-bottom: 1px solid ${({ theme }) => theme.borderSubtle};
+
+  @media (min-width: 768px) {
+    margin-bottom: 3.5rem;
+    gap: 2rem 3rem;
+  }
+`;
+
+const ProofItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+
+const ProofValue = styled.span`
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+  font-weight: 800;
+  color: ${({ theme }) => theme.textPrimary};
+  letter-spacing: -0.02em;
+`;
+
+const ProofLabel = styled.span`
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: ${({ theme }) => theme.textMuted};
 `;
 
 const ActionRow = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 2.75rem;
-
-  @media (min-width: 540px) {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 3.5rem;
-  }
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
 `;
 
 const PrimaryButton = styled.a`
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.6rem;
+  gap: 0.6rem;
+  padding: 0.85rem 1.65rem;
   border-radius: 999px;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  background: ${({ theme }) => (theme.mode === 'dark' ? '#FFFFFF' : '#141416')};
-  color: ${({ theme }) => (theme.mode === 'dark' ? '#141416' : '#FFFFFF')};
+  background: ${({ theme }) => (theme.mode === 'dark' ? '#FFFFFF' : '#0B0C10')};
+  color: ${({ theme }) => (theme.mode === 'dark' ? '#08090D' : '#FFFFFF')};
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  width: 100%;
-
-  @media (min-width: 540px) {
-    width: auto;
-  }
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   }
 `;
 
 const SecondaryButton = styled.button`
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.5rem;
+  gap: 0.6rem;
+  padding: 0.85rem 1.4rem;
   border-radius: 999px;
-  font-size: 0.9375rem;
-  font-weight: 600;
   background: ${({ theme }) => theme.bgCard};
   border: 1px solid ${({ theme }) => theme.borderSubtle};
   color: ${({ theme }) => theme.textPrimary};
-  transition: all 0.25s ease;
-  width: 100%;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
-  @media (min-width: 540px) {
-    width: auto;
+  &:hover {
+    border-color: ${({ theme }) => theme.borderHover};
+    transform: translateY(-2px);
   }
+`;
+
+const EmailCopyBadge = styled.button<{ $copied: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid
+    ${({ $copied, theme }) => ($copied ? theme.accentEmerald : theme.borderSubtle)};
+  color: ${({ $copied, theme }) => ($copied ? theme.accentEmerald : theme.textSecondary)};
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
   &:hover {
     border-color: ${({ theme }) => theme.accentEmerald};
-    transform: translateY(-2px);
-    background: ${({ theme }) => theme.bgCardHover};
+    color: ${({ theme }) => theme.textPrimary};
   }
-`;
-
-const MetricGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  max-width: 860px;
-  padding-top: 1.75rem;
-  border-top: 1px solid ${({ theme }) => theme.borderSubtle};
-
-  @media (min-width: 640px) {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-    padding-top: 2rem;
-  }
-`;
-
-const MetricCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-`;
-
-const MetricVal = styled.span`
-  font-size: clamp(1.25rem, 3.2vw, 1.85rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: ${({ theme }) => theme.textPrimary};
-  font-family: 'JetBrains Mono', monospace;
-`;
-
-const MetricLabel = styled.span`
-  font-size: 0.75rem;
-  color: ${({ theme }) => theme.textMuted};
-  font-weight: 500;
 
   @media (min-width: 480px) {
     font-size: 0.8125rem;
@@ -235,6 +266,19 @@ const MetricLabel = styled.span`
 
 export const Hero: React.FC<{ onOpenContact: () => void }> = ({ onOpenContact }) => {
   const [copied, setCopied] = useState(false);
+  // Initialize with a random index on reload so it starts on a different phrase every visit
+  const [phraseIndex, setPhraseIndex] = useState(() =>
+    Math.floor(Math.random() * PUNCHY_PHRASES.length)
+  );
+
+  // Automatically rotates every 5 minutes (300,000 ms) while on the page
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % PUNCHY_PHRASES.length);
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(RESUME_DATA.email);
@@ -247,10 +291,12 @@ export const Hero: React.FC<{ onOpenContact: () => void }> = ({ onOpenContact })
       <HeroCanvas />
       <div className="container">
         <HeroContent>
-            <StatusPill>
-              <StatusDot />
-              <span>Full-Stack & MCP Architect · Turning Prompts into Production</span>
-            </StatusPill>
+          <StatusPill>
+            <StatusDot />
+            <DynamicPillText key={phraseIndex}>
+              {PUNCHY_PHRASES[phraseIndex]}
+            </DynamicPillText>
+          </StatusPill>
 
           <TitleClip>
             <HeroHed>
@@ -264,47 +310,46 @@ export const Hero: React.FC<{ onOpenContact: () => void }> = ({ onOpenContact })
             </HeroHed>
           </TitleClip>
 
-          <HeroSub>
-            Obsessed with <strong>intuitive user interfaces</strong>, resilient distributed backends, and low-latency{' '}
-            <strong>Model Context Protocol (MCP)</strong> agent pipelines. If an API query drags or an AI tool call lags, I take it personally.
-          </HeroSub>
+          <SubText>
+            Obsessed with intuitive user interfaces, resilient distributed backends, and low-latency Model Context Protocol (MCP) agent pipelines. If an API query drags or an AI tool call lags, I take it personally.
+          </SubText>
+
+          <ProofStrip>
+            <ProofItem>
+              <ProofValue>2+ Yrs</ProofValue>
+              <ProofLabel>Full-Stack Experience</ProofLabel>
+            </ProofItem>
+            <ProofItem>
+              <ProofValue>1M+</ProofValue>
+              <ProofLabel>Daily Logs Handled</ProofLabel>
+            </ProofItem>
+            <ProofItem>
+              <ProofValue>35%</ProofValue>
+              <ProofLabel>Latency Optimization</ProofLabel>
+            </ProofItem>
+          </ProofStrip>
 
           <ActionRow>
             <PrimaryButton href="#work" data-cursor="View Projects">
-              <Layers size={16} />
-              <span>Explore GitHub Projects</span>
-              <ArrowDown size={16} />
+              <span>View Selected Work</span>
+              <ArrowDown size={15} />
             </PrimaryButton>
 
-            <SecondaryButton onClick={handleCopyEmail} data-cursor="Copy Email">
-              {copied ? <Check size={16} color="#10B981" /> : <Copy size={16} />}
-              <span>{copied ? 'Copied to clipboard!' : 'Copy Email'}</span>
+            <SecondaryButton onClick={onOpenContact} data-cursor="Get in touch">
+              <Sparkles size={15} />
+              <span>Get in Touch</span>
             </SecondaryButton>
 
-            <SecondaryButton onClick={onOpenContact} data-cursor="Connect">
-              <Sparkles size={16} color="#10B981" />
-              <span>Get In Touch</span>
-            </SecondaryButton>
+            <EmailCopyBadge
+              onClick={handleCopyEmail}
+              $copied={copied}
+              data-cursor="Copy Email"
+              title="Click to copy email address"
+            >
+              {copied ? <Check size={14} /> : <Copy size={14} />}
+              <span>{copied ? 'Copied to clipboard' : RESUME_DATA.email}</span>
+            </EmailCopyBadge>
           </ActionRow>
-
-          <MetricGrid>
-            <MetricCard>
-              <MetricVal>2+ Yrs</MetricVal>
-              <MetricLabel>Full-Stack Experience</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricVal>1M+</MetricVal>
-              <MetricLabel>Daily Operational Logs</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricVal>35%</MetricVal>
-              <MetricLabel>Latency Optimization</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricVal>50+</MetricVal>
-              <MetricLabel>Devs on MCP Gateway</MetricLabel>
-            </MetricCard>
-          </MetricGrid>
         </HeroContent>
       </div>
     </HeroSection>

@@ -5,12 +5,12 @@ import {
   Mail,
   Linkedin,
   Github,
-  Send,
   Check,
   Copy,
   X,
   Sparkles,
   ArrowUpRight,
+  Send,
 } from 'lucide-react';
 
 const CTASection = styled.section`
@@ -125,7 +125,6 @@ const SecondaryCTA = styled.a`
   &:hover {
     border-color: ${({ theme }) => theme.accentEmerald};
     transform: translateY(-3px);
-    background: ${({ theme }) => theme.bgCardHover};
   }
 `;
 
@@ -153,10 +152,10 @@ const ModalBox = styled.div<{ $isOpen: boolean }>`
   border: 1px solid ${({ theme }) => theme.borderSubtle};
   border-radius: 20px;
   width: 100%;
-  max-width: 560px;
+  max-width: 540px;
   max-height: 90vh;
   overflow-y: auto;
-  padding: 1.5rem 1.25rem;
+  padding: 1.75rem 1.25rem;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
   transform: ${({ $isOpen }) => ($isOpen ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(20px)')};
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -164,7 +163,7 @@ const ModalBox = styled.div<{ $isOpen: boolean }>`
 
   @media (min-width: 480px) {
     border-radius: 24px;
-    padding: 2.5rem;
+    padding: 2.25rem 2rem;
   }
 `;
 
@@ -213,27 +212,30 @@ const ModalSub = styled.p`
 const ContactGrid = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: 0.85rem;
 `;
 
-const ContactItem = styled.div`
+const ContactCard = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  border-radius: 14px;
   background: ${({ theme }) => theme.bgSecondary};
   border: 1px solid ${({ theme }) => theme.borderSubtle};
-  gap: 0.5rem;
-  overflow: hidden;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.borderHover};
+  }
 `;
 
 const ContactInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  font-size: 0.85rem;
+  gap: 0.75rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: ${({ theme }) => theme.textPrimary};
   overflow: hidden;
@@ -241,79 +243,63 @@ const ContactInfo = styled.div`
   white-space: nowrap;
 `;
 
-const CopyBtn = styled.button`
+const ActionButtonsGroup = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.3rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: ${({ theme }) => theme.accentEmerald};
-  padding: 0.3rem 0.65rem;
-  border-radius: 6px;
-  background: ${({ theme }) => (theme.mode === 'dark' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(5, 150, 105, 0.1)')};
+  gap: 0.5rem;
   flex-shrink: 0;
-
-  &:hover {
-    opacity: 0.85;
-  }
 `;
 
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.75rem 0.9rem;
-  border-radius: 10px;
-  background: ${({ theme }) => theme.bgSecondary};
-  border: 1px solid ${({ theme }) => theme.borderSubtle};
-  color: ${({ theme }) => theme.textPrimary};
-  font-family: inherit;
-  font-size: 0.88rem;
-  outline: none;
-
-  &:focus {
-    border-color: ${({ theme }) => theme.accentEmerald};
-  }
-`;
-
-const Textarea = styled.textarea`
-  width: 100%;
-  padding: 0.75rem 0.9rem;
-  border-radius: 10px;
-  background: ${({ theme }) => theme.bgSecondary};
-  border: 1px solid ${({ theme }) => theme.borderSubtle};
-  color: ${({ theme }) => theme.textPrimary};
-  font-family: inherit;
-  font-size: 0.88rem;
-  outline: none;
-  resize: vertical;
-  min-height: 90px;
-
-  &:focus {
-    border-color: ${({ theme }) => theme.accentEmerald};
-  }
-`;
-
-const SubmitBtn = styled.button`
+const ActionPillBtn = styled.button`
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.85rem;
-  border-radius: 10px;
-  font-size: 0.88rem;
+  gap: 0.35rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  background: ${({ theme }) => theme.accentEmerald};
-  color: #ffffff;
+  color: ${({ theme }) => theme.accentEmerald};
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(5, 150, 105, 0.1)'};
+  border: none;
+  cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    opacity: 0.92;
-    transform: translateY(-2px);
+    opacity: 0.85;
+    transform: translateY(-1px);
+  }
+`;
+
+const ActionLinkBtn = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &.linkedin {
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+  }
+
+  &.github {
+    color: #a78bfa;
+    background: rgba(167, 139, 250, 0.12);
+  }
+
+  &.email-send {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.12);
+  }
+
+  &:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
   }
 `;
 
@@ -325,21 +311,11 @@ interface ContactSectionProps {
 
 export const ContactSection: React.FC<ContactSectionProps> = ({ isOpen, onOpen, onClose }) => {
   const [emailCopied, setEmailCopied] = useState(false);
-  const [formSent, setFormSent] = useState(false);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(RESUME_DATA.email);
     setEmailCopied(true);
     setTimeout(() => setEmailCopied(false), 2500);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormSent(true);
-    setTimeout(() => {
-      setFormSent(false);
-      onClose();
-    }, 2500);
   };
 
   return (
@@ -384,88 +360,68 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ isOpen, onOpen, 
 
           <ModalTitle>Let's Connect</ModalTitle>
           <ModalSub>
-            Direct contact channels for technical opportunities, distributed systems consulting, and
-            collaborations.
+            Direct communication channels for engineering opportunities, distributed systems consulting, and technical discussions.
           </ModalSub>
 
           <ContactGrid>
-            <ContactItem>
+            {/* Email Card */}
+            <ContactCard>
               <ContactInfo>
-                <Mail size={16} color="#10B981" />
+                <Mail size={18} color="#10B981" />
                 <span>{RESUME_DATA.email}</span>
               </ContactInfo>
-              <CopyBtn onClick={handleCopyEmail}>
-                {emailCopied ? <Check size={13} /> : <Copy size={13} />}
-                <span>{emailCopied ? 'Copied' : 'Copy'}</span>
-              </CopyBtn>
-            </ContactItem>
+              <ActionButtonsGroup>
+                <ActionPillBtn onClick={handleCopyEmail}>
+                  {emailCopied ? <Check size={13} /> : <Copy size={13} />}
+                  <span>{emailCopied ? 'Copied' : 'Copy'}</span>
+                </ActionPillBtn>
+                <ActionLinkBtn
+                  className="email-send"
+                  href={`mailto:${RESUME_DATA.email}`}
+                  data-cursor="Send Email"
+                >
+                  <Send size={13} />
+                  <span>Email</span>
+                </ActionLinkBtn>
+              </ActionButtonsGroup>
+            </ContactCard>
 
-            <ContactItem>
+            {/* LinkedIn Card */}
+            <ContactCard>
               <ContactInfo>
-                <Linkedin size={16} color="#38BDF8" />
+                <Linkedin size={18} color="#38BDF8" />
                 <span>LinkedIn Profile</span>
               </ContactInfo>
-              <a
+              <ActionLinkBtn
+                className="linkedin"
                 href={RESUME_DATA.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.3rem',
-                  color: '#38BDF8',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                }}
+                data-cursor="LinkedIn"
               >
-                <span>Visit</span>
+                <span>Visit Profile</span>
                 <ArrowUpRight size={13} />
-              </a>
-            </ContactItem>
+              </ActionLinkBtn>
+            </ContactCard>
 
-            <ContactItem>
+            {/* GitHub Card */}
+            <ContactCard>
               <ContactInfo>
-                <Github size={16} color="#A78BFA" />
+                <Github size={18} color="#A78BFA" />
                 <span>GitHub Repositories</span>
               </ContactInfo>
-              <a
+              <ActionLinkBtn
+                className="github"
                 href={RESUME_DATA.github}
                 target="_blank"
                 rel="noreferrer"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.3rem',
-                  color: '#A78BFA',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                }}
+                data-cursor="GitHub"
               >
-                <span>Visit</span>
+                <span>Visit GitHub</span>
                 <ArrowUpRight size={13} />
-              </a>
-            </ContactItem>
+              </ActionLinkBtn>
+            </ContactCard>
           </ContactGrid>
-
-          <Form onSubmit={handleSubmit}>
-            <Input type="text" placeholder="Your Name or Company" required />
-            <Input type="email" placeholder="Your Email Address" required />
-            <Textarea placeholder="How can we collaborate on high-performance engineering?" required />
-
-            <SubmitBtn type="submit">
-              {formSent ? (
-                <>
-                  <Check size={16} />
-                  <span>Message Sent Successfully!</span>
-                </>
-              ) : (
-                <>
-                  <Send size={16} />
-                  <span>Send Direct Message</span>
-                </>
-              )}
-            </SubmitBtn>
-          </Form>
         </ModalBox>
       </ModalOverlay>
     </>
