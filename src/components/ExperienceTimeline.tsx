@@ -4,11 +4,11 @@ import { RESUME_DATA } from '../data/resumeData';
 import { Briefcase, GraduationCap, MapPin, Calendar, CheckCircle2 } from 'lucide-react';
 
 const TimelineSection = styled.section`
-  padding: 4.5rem 0;
+  padding: 6rem 0 5.5rem;
   border-bottom: 1px solid ${({ theme }) => theme.borderSubtle};
 
   @media (min-width: 768px) {
-    padding: 6.5rem 0;
+    padding: 8rem 0 7.5rem;
   }
 `;
 
@@ -313,11 +313,13 @@ export const ExperienceTimeline: React.FC = () => {
                   ))}
                 </BulletList>
 
-                <TechPillRow>
-                  {exp.technologies.map((t) => (
-                    <TechPill key={t}>{t}</TechPill>
-                  ))}
-                </TechPillRow>
+                {exp.technologies && exp.technologies.length > 0 && (
+                  <TechPillRow>
+                    {exp.technologies.map((t) => (
+                      <TechPill key={t}>{t}</TechPill>
+                    ))}
+                  </TechPillRow>
+                )}
               </ContentCard>
             </TimelineNode>
           ))}

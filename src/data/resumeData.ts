@@ -23,9 +23,10 @@ export interface ProjectData {
     | 'gitbroski-cli';
 }
 
-export interface SkillCategory {
-  category: string;
-  skills: { name: string; level: number; featured?: boolean; iconName?: string }[];
+export interface Skill {
+  name: string;
+  category: 'Languages' | 'Backend & Architecture' | 'Databases & ORM' | 'DevOps & Cloud Infrastructure' | 'Testing & Observability';
+  accentColor: string;
 }
 
 export interface ExperienceItem {
@@ -35,7 +36,7 @@ export interface ExperienceItem {
   period: string;
   isCurrent?: boolean;
   achievements: string[];
-  technologies: string[];
+  technologies?: string[];
 }
 
 export const RESUME_DATA = {
@@ -44,8 +45,10 @@ export const RESUME_DATA = {
   specialization: 'Distributed Systems, High-Scale Microservices & Platform Infrastructure',
   location: 'Fazilka, Punjab, India',
   email: 'saksham.gupta1411@gmail.com',
-  linkedin: 'https://linkedin.com/in/saksham1411',
   github: 'https://github.com/Saksham1411',
+  linkedin: 'https://linkedin.com/in/saksham1411',
+  portfolio: 'https://saksham-portfolio.dev',
+
   education: {
     degree: 'Bachelor of Engineering in Computer Science Engineering',
     institution: 'Chitkara University, Punjab, India',
@@ -54,7 +57,7 @@ export const RESUME_DATA = {
     honors: 'Top Academic Performer in CSE Cohort',
   },
   summary:
-    'Result-driven Full-Stack Software Engineer with 2+ years of experience specializing in distributed systems, microservices architecture, and high-performance backend infrastructure. Proven track record of enhancing developer productivity and platform reliability by architecting reusable frameworks, implementing fine-grained authorization (RBAC), and migrating legacy subsystems. Adept at optimizing system latency, managing containerized deployments via Kubernetes, and driving technical excellence across cross-functional engineering teams.',
+    'Result-driven Full-Stack Software Engineer with over 2 years of professional experience specializing in distributed systems, microservices architecture, and high-performance backend infrastructure. Proven track record of enhancing developer productivity and platform reliability by architecting reusable frameworks, implementing fine-grained authorization (RBAC), and migrating legacy subsystems. Adept at optimizing system latency, managing containerized deployments via Kubernetes, and driving technical excellence across cross-functional engineering teams.',
 
   stats: [
     { label: 'Daily Logs Handled', value: '1M+' },
@@ -66,7 +69,7 @@ export const RESUME_DATA = {
   ],
 
   proofItems: [
-    '2+ Years of Engineering Experience',
+    '2+ Years of Professional Engineering Experience',
     'Fine-Grained RBAC for Model Context Protocol (MCP)',
     '1M+ Daily Operational Logs via Centralized Audit Service',
     '35% API Latency Reduction via Distributed Query Optimization',
@@ -103,61 +106,44 @@ export const RESUME_DATA = {
     },
   ],
 
-  skillCategories: [
-    {
-      category: 'Languages',
-      skills: [
-        { name: 'TypeScript', level: 95, featured: true },
-        { name: 'JavaScript (ESNext)', level: 95, featured: true },
-        { name: 'Python', level: 85, featured: true },
-        { name: 'Go (Golang)', level: 80, featured: true },
-        { name: 'Java', level: 82 },
-        { name: 'HTML5 & Modern CSS', level: 92 },
-      ],
-    },
-    {
-      category: 'Backend & Distributed Systems',
-      skills: [
-        { name: 'Node.js & Express.js', level: 96, featured: true },
-        { name: 'Model Context Protocol (MCP)', level: 94, featured: true },
-        { name: 'Microservices Architecture', level: 92, featured: true },
-        { name: 'RESTful API Engineering', level: 95 },
-        { name: 'Distributed Systems Design', level: 88, featured: true },
-        { name: 'WebSockets & Event-Driven Systems', level: 90, featured: true },
-      ],
-    },
-    {
-      category: 'Databases & Caching',
-      skills: [
-        { name: 'PostgreSQL', level: 90, featured: true },
-        { name: 'Redis (Cache & Queues)', level: 88, featured: true },
-        { name: 'MongoDB', level: 85 },
-        { name: 'MySQL', level: 86 },
-        { name: 'Sequelize ORM', level: 92, featured: true },
-      ],
-    },
-    {
-      category: 'DevOps, Cloud & Infrastructure',
-      skills: [
-        { name: 'Docker & Containerization', level: 90, featured: true },
-        { name: 'Kubernetes (K8s)', level: 84, featured: true },
-        { name: 'AWS (ECS, S3, RDS, Lambda)', level: 82 },
-        { name: 'GitLab CI/CD Pipelines', level: 88, featured: true },
-        { name: 'Linux System Administration', level: 86 },
-        { name: 'Git & Version Control', level: 94 },
-      ],
-    },
-    {
-      category: 'Testing, Security & Observability',
-      skills: [
-        { name: 'Jest & Cypress (85%+ Coverage)', level: 92, featured: true },
-        { name: 'Okta (AuthN / AuthZ / RBAC)', level: 88, featured: true },
-        { name: 'Apache Superset Analytics', level: 85 },
-        { name: 'Distributed Logging & Auditing', level: 90, featured: true },
-        { name: 'Load & Chaos Testing', level: 84 },
-      ],
-    },
-  ] as SkillCategory[],
+  skillsList: [
+    // Languages
+    { name: 'JavaScript', category: 'Languages', accentColor: '#FACC15' },
+    { name: 'TypeScript', category: 'Languages', accentColor: '#38BDF8' },
+    { name: 'Python', category: 'Languages', accentColor: '#EAB308' },
+    { name: 'Java', category: 'Languages', accentColor: '#F97316' },
+    { name: 'Go (Golang)', category: 'Languages', accentColor: '#06B6D4' },
+    { name: 'HTML, CSS', category: 'Languages', accentColor: '#EC4899' },
+
+    // Backend & Architecture
+    { name: 'Node.js', category: 'Backend & Architecture', accentColor: '#10B981' },
+    { name: 'Express.js', category: 'Backend & Architecture', accentColor: '#10B981' },
+    { name: 'REST APIs', category: 'Backend & Architecture', accentColor: '#38BDF8' },
+    { name: 'Microservices', category: 'Backend & Architecture', accentColor: '#10B981' },
+    { name: 'Model Context Protocol (MCP)', category: 'Backend & Architecture', accentColor: '#10B981' },
+    { name: 'Distributed Systems', category: 'Backend & Architecture', accentColor: '#8B5CF6' },
+
+    // Databases & ORM
+    { name: 'PostgreSQL', category: 'Databases & ORM', accentColor: '#3B82F6' },
+    { name: 'MySQL', category: 'Databases & ORM', accentColor: '#0284C7' },
+    { name: 'MongoDB', category: 'Databases & ORM', accentColor: '#22C55E' },
+    { name: 'Redis', category: 'Databases & ORM', accentColor: '#EF4444' },
+    { name: 'Sequelize ORM', category: 'Databases & ORM', accentColor: '#38BDF8' },
+
+    // DevOps & Cloud Infrastructure
+    { name: 'Docker', category: 'DevOps & Cloud Infrastructure', accentColor: '#0284C7' },
+    { name: 'Kubernetes', category: 'DevOps & Cloud Infrastructure', accentColor: '#8B5CF6' },
+    { name: 'GitLab CI/CD', category: 'DevOps & Cloud Infrastructure', accentColor: '#EA580C' },
+    { name: 'Git', category: 'DevOps & Cloud Infrastructure', accentColor: '#F43F5E' },
+    { name: 'AWS', category: 'DevOps & Cloud Infrastructure', accentColor: '#F97316' },
+    { name: 'Linux', category: 'DevOps & Cloud Infrastructure', accentColor: '#EAB308' },
+
+    // Testing & Observability
+    { name: 'Jest', category: 'Testing & Observability', accentColor: '#22C55E' },
+    { name: 'Cypress', category: 'Testing & Observability', accentColor: '#10B981' },
+    { name: 'Apache Superset', category: 'Testing & Observability', accentColor: '#06B6D4' },
+    { name: 'Okta (AuthN/AuthZ)', category: 'Testing & Observability', accentColor: '#F43F5E' },
+  ] as Skill[],
 
   experiences: [
     {
@@ -178,12 +164,17 @@ export const RESUME_DATA = {
         'Model Context Protocol (MCP)',
         'Node.js',
         'TypeScript',
+        'Express.js',
         'PostgreSQL',
+        'Sequelize ORM',
         'Redis',
         'Kubernetes',
         'Docker',
-        'GitLab CI/CD',
         'Okta RBAC',
+        'Jest',
+        'Cypress',
+        'GitLab CI/CD',
+        'Apache Superset',
       ],
     },
     {
@@ -191,32 +182,24 @@ export const RESUME_DATA = {
       role: 'Software Engineer Intern',
       location: 'Gurugram, India',
       period: 'Jul 2024 – Jul 2025',
+      isCurrent: false,
       achievements: [
         'Led the zero-downtime migration of 8+ Node.js microservices to the latest LTS version, which reduced memory consumption, saved 15% in infrastructure resource utilization, and achieved a 60% boost in computing performance while aligning systems with modern security standards.',
         'Conceptualized and built a specialized Debug Tab feature to streamline internal user access management troubleshooting, reducing manual verification workflows and support response times by 40%.',
         'Authored 120+ comprehensive test suites utilizing Jest and Cypress to establish 85%+ test coverage, ensuring robust deployments and eliminating critical regressions within production microservices.',
         'Identified backend performance bottlenecks by conducting rigorous load tests on Node.js and React.js services, implementing targeted code optimizations to maintain low latency under peak user loads.',
       ],
-      technologies: [
-        'Node.js (LTS Migration)',
-        'React.js',
-        'Express.js',
-        'Jest',
-        'Cypress',
-        'MongoDB',
-        'MySQL',
-        'Apache Superset',
-      ],
+      technologies: ['Node.js', 'React.js', 'Jest', 'Cypress', 'LTS Migration', 'Docker'],
     },
   ] as ExperienceItem[],
 
   projects: [
     {
       id: 'realtime-cursor-sync',
-      title: 'Realtime-Cursor: Collaborative Doc & Caret Sync',
-      subtitle: 'Google Docs-Style Multi-User Text Caret Synchronization & Live Writing',
-      tagline: 'Real-time collaborative document editor with multi-user text carets, live typing presence, and synchronized text state.',
-      tags: ['Collaborative Docs', 'Google Docs Sync', 'WebSockets', 'Text Caret Presence', 'Node.js'],
+      title: 'Realtime-Cursor: Multi-User Collaboration Engine',
+      subtitle: 'Low-Latency WebSocket State Broadcast & Multi-Cursor Sync',
+      tagline: 'Google Docs-style collaborative editor engine broadcasting remote carets and text edits over WebSockets.',
+      tags: ['WebSockets', 'Real-Time Sync', 'Node.js', 'TypeScript', 'DOM Caret API'],
       impactMetric: 'Sub-20ms Caret Broadcast',
       accentColor: '#10B981',
       palette: 'emerald',
