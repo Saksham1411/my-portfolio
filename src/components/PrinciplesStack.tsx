@@ -3,25 +3,25 @@ import styled from 'styled-components';
 import { RESUME_DATA } from '../data/resumeData';
 
 const SectionWrapper = styled.section`
-  padding: 4.5rem 0;
+  padding: 5rem 0 12rem;
   border-bottom: 1px solid ${({ theme }) => theme.borderSubtle};
   position: relative;
 
   @media (min-width: 768px) {
-    padding: 7rem 0;
+    padding: 7rem 0 16rem;
   }
 `;
 
 const SectionHeader = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3.5rem;
 
   @media (min-width: 768px) {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 3.5rem;
+    margin-bottom: 4.5rem;
   }
 `;
 
@@ -68,37 +68,45 @@ const CounterBadge = styled.div`
 `;
 
 const StackContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
   position: relative;
-
-  @media (min-width: 768px) {
-    gap: 2rem;
-  }
+  display: block;
 `;
 
-const StickyCard = styled.div<{ $index: number }>`
+const StickyCard = styled.div<{ $index: number; $scale: number; $brightness: number }>`
+  position: -webkit-sticky;
   position: sticky;
-  top: calc(65px + ${({ $index }) => $index * 12}px);
-  background: ${({ theme }) => (theme.mode === 'dark' ? '#14161F' : '#FFFFFF')};
+  top: calc(75px + ${({ $index }) => $index * 16}px);
+  background: ${({ theme }) => (theme.mode === 'dark' ? '#13151D' : '#FFFFFF')};
   border: 1px solid ${({ theme }) => theme.borderSubtle};
-  border-radius: 18px;
-  padding: 1.5rem 1.25rem;
+  border-radius: 20px;
+  padding: 1.75rem 1.5rem;
+  margin-bottom: 3rem;
   box-shadow: ${({ theme }) =>
-    theme.mode === 'dark' ? '0 16px 40px rgba(0,0,0,0.6)' : '0 16px 32px rgba(0,0,0,0.06)'};
-  transition: transform 0.2s ease, border-color 0.2s ease;
+    theme.mode === 'dark'
+      ? '0 25px 60px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+      : '0 20px 50px -10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03)'};
+  transform: scale(${({ $scale }) => $scale});
+  transform-origin: center top;
+  filter: brightness(${({ $brightness }) => $brightness});
+  transition: transform 0.12s ease-out, filter 0.15s ease-out, border-color 0.25s ease;
   z-index: ${({ $index }) => $index + 1};
+  will-change: transform, filter;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   @media (min-width: 640px) {
     border-radius: 24px;
-    padding: 2.5rem;
-    top: calc(85px + ${({ $index }) => $index * 18}px);
+    padding: 2.5rem 2.25rem;
+    top: calc(90px + ${({ $index }) => $index * 20}px);
+    margin-bottom: 4rem;
   }
 
   @media (min-width: 768px) {
     padding: 3.5rem 4rem;
-    top: calc(100px + ${({ $index }) => $index * 24}px);
+    top: calc(105px + ${({ $index }) => $index * 26}px);
+    margin-bottom: 5.5rem;
   }
 
   &:hover {
@@ -110,10 +118,10 @@ const CardTop = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 
   @media (min-width: 640px) {
-    margin-bottom: 2rem;
+    margin-bottom: 2.25rem;
   }
 `;
 
@@ -122,22 +130,24 @@ const CardIndex = styled.span`
   font-size: 1.1rem;
   font-weight: 700;
   color: ${({ theme }) => theme.accentEmerald};
-  padding: 0.25rem 0.65rem;
+  padding: 0.25rem 0.75rem;
   background: ${({ theme }) =>
     theme.mode === 'dark' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(5, 150, 105, 0.1)'};
+  border: 1px solid
+    ${({ theme }) => (theme.mode === 'dark' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(5, 150, 105, 0.2)')};
   border-radius: 999px;
 
   @media (min-width: 640px) {
     font-size: 1.25rem;
-    padding: 0.3rem 0.8rem;
+    padding: 0.35rem 0.9rem;
   }
 `;
 
 const CardHighlight = styled.span`
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: ${({ theme }) => theme.textMuted};
 
   @media (min-width: 640px) {
@@ -146,44 +156,83 @@ const CardHighlight = styled.span`
 `;
 
 const CardTitle = styled.h3`
-  font-size: clamp(1.2rem, 3.2vw, 2.25rem);
-  font-weight: 700;
+  font-size: clamp(1.25rem, 3.2vw, 2.25rem);
+  font-weight: 800;
   letter-spacing: -0.025em;
-  line-height: 1.3;
+  line-height: 1.25;
   color: ${({ theme }) => theme.textPrimary};
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 
   @media (min-width: 640px) {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
   }
 `;
 
 const CardBody = styled.p`
-  font-size: clamp(0.9rem, 2vw, 1.2rem);
-  line-height: 1.65;
+  font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+  line-height: 1.7;
   color: ${({ theme }) => theme.textSecondary};
   max-width: 860px;
 `;
 
 export const PrinciplesStack: React.FC = () => {
   const [activeCard, setActiveCard] = useState(1);
+  const [cardTransforms, setCardTransforms] = useState<{ scale: number; brightness: number }[]>(
+    RESUME_DATA.principles.map(() => ({ scale: 1, brightness: 1 }))
+  );
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
+    let animationFrameId: number;
+
     const handleScroll = () => {
-      const scrollPos = window.scrollY + 250;
-      cardRefs.current.forEach((card, index) => {
-        if (!card) return;
-        const rect = card.getBoundingClientRect();
-        const top = rect.top + window.scrollY;
-        if (scrollPos >= top) {
-          setActiveCard(index + 1);
-        }
+      animationFrameId = requestAnimationFrame(() => {
+        const transforms = RESUME_DATA.principles.map((_, index) => {
+          const cardEl = cardRefs.current[index];
+          if (!cardEl) return { scale: 1, brightness: 1 };
+
+          const targetTop = 105 + index * 26;
+
+          // How far subsequent cards have passed this card
+          let depth = 0;
+          for (let nextIdx = index + 1; nextIdx < RESUME_DATA.principles.length; nextIdx++) {
+            const nextCard = cardRefs.current[nextIdx];
+            if (nextCard) {
+              const nextRect = nextCard.getBoundingClientRect();
+              if (nextRect.top <= targetTop + 80) {
+                depth += 1;
+              }
+            }
+          }
+
+          // Calculate smooth dynamic scale and brightness dimming
+          const scale = Math.max(0.90, 1 - depth * 0.035);
+          const brightness = Math.max(0.78, 1 - depth * 0.07);
+
+          return { scale, brightness };
+        });
+
+        setCardTransforms(transforms);
+
+        // Update active index
+        const scrollPos = window.scrollY + 280;
+        cardRefs.current.forEach((card, index) => {
+          if (!card) return;
+          const top = card.getBoundingClientRect().top + window.scrollY;
+          if (scrollPos >= top) {
+            setActiveCard(index + 1);
+          }
+        });
       });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   return (
@@ -205,6 +254,8 @@ export const PrinciplesStack: React.FC = () => {
             <StickyCard
               key={principle.id}
               $index={idx}
+              $scale={cardTransforms[idx]?.scale ?? 1}
+              $brightness={cardTransforms[idx]?.brightness ?? 1}
               ref={(el) => (cardRefs.current[idx] = el)}
               data-cursor={`Principle ${principle.id}`}
             >

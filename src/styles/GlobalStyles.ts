@@ -12,8 +12,6 @@ export const GlobalStyles = createGlobalStyle`
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    max-width: 100vw;
-    overflow-x: hidden;
   }
 
   body {
@@ -21,8 +19,7 @@ export const GlobalStyles = createGlobalStyle`
     color: ${({ theme }) => theme.textPrimary};
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
-    max-width: 100vw;
-    overflow-x: hidden;
+    overflow-x: clip;
     transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 

@@ -247,10 +247,10 @@ export const Hero: React.FC<{ onOpenContact: () => void }> = ({ onOpenContact })
       <HeroCanvas />
       <div className="container">
         <HeroContent>
-          <StatusPill>
-            <StatusDot />
-            <span>Full-Stack & MCP Architect · Turning Prompts into Production</span>
-          </StatusPill>
+            <StatusPill>
+              <StatusDot />
+              <span>Full-Stack & MCP Architect · Turning Prompts into Production</span>
+            </StatusPill>
 
           <TitleClip>
             <HeroHed>
