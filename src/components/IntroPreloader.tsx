@@ -4,11 +4,15 @@ import gsap from 'gsap';
 
 const Overlay = styled.div`
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
   background: #08090d;
-  z-index: 999999;
+  z-index: 99999999;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,6 +21,8 @@ const Overlay = styled.div`
   overflow: hidden;
   user-select: none;
   pointer-events: auto;
+  touch-action: none;
+  overscroll-behavior: none;
 `;
 
 const AmbientGlow = styled.div`
@@ -48,7 +54,8 @@ const BgGrid = styled.div`
 const SpiralViewport = styled.div`
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,20 +139,59 @@ const FinalSubtitle = styled.p`
 
 const WORD = 'SAKSHAM';
 
-export const IntroPreloader: React.FC = () => {
+export const IntroPreloader: React.FC<{ onComplete?: () => void }> = ({ onComplete }) => {
   const [isHidden, setIsHidden] = useState(false);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
   const finalHeroRef = useRef<HTMLDivElement | null>(null);
+  const onCompleteRef = useRef(onComplete);
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  useEffect(() => {
+    // Strict Full-Page Scroll Lock
+    const preventScroll = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const preventKeyScroll = (e: KeyboardEvent) => {
+      const keys = ['ArrowUp', 'ArrowDown', 'Space', 'PageUp', 'PageDown', 'Home', 'End'];
+      if (keys.includes(e.code) || keys.includes(e.key)) {
+        e.preventDefault();
+      }
+    };
+
+    window.scrollTo(0, 0);
+    document.documentElement.classList.add('is-preloading');
+    document.body.classList.add('is-preloading');
+
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+    window.addEventListener('keydown', preventKeyScroll, { passive: false });
+
+    const unlockScroll = () => {
+      document.documentElement.classList.remove('is-preloading');
+      document.body.classList.remove('is-preloading');
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
+      window.removeEventListener('keydown', preventKeyScroll);
+      window.scrollTo(0, 0);
+      if (onCompleteRef.current) {
+        onCompleteRef.current();
+      }
+    };
 
     const overlay = overlayRef.current;
     const main = mainRef.current;
     const finalHero = finalHeroRef.current;
 
-    if (!overlay || !main || !finalHero) return;
+    if (!overlay || !main || !finalHero) {
+      unlockScroll();
+      return;
+    }
 
     // Dynamically calculate grid cell counts to fill 100vw x 100vh edge-to-edge
     const w = window.innerWidth;
@@ -174,7 +220,7 @@ export const IntroPreloader: React.FC = () => {
       delay: 0.1,
       onComplete: () => {
         setIsHidden(true);
-        document.body.style.overflow = 'auto';
+        unlockScroll();
       },
     });
 
@@ -273,7 +319,7 @@ export const IntroPreloader: React.FC = () => {
 
     return () => {
       tl.kill();
-      document.body.style.overflow = 'auto';
+      unlockScroll();
     };
   }, []);
 
