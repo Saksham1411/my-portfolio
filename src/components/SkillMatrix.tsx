@@ -15,14 +15,14 @@ const softLandingGlow = keyframes`
   }
 `;
 
-/* Pinned Scroll Stage with extended scroll time */
+/* Pinned Scroll Stage across all devices */
 const ScrollStage = styled.section`
-  height: 270vh;
+  height: 240vh;
   position: relative;
   border-bottom: 1px solid ${({ theme }) => theme.borderSubtle};
 
   @media (min-width: 768px) {
-    height: 300vh;
+    height: 280vh;
   }
 `;
 
@@ -34,73 +34,94 @@ const StickyViewport = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1.5rem 0 1rem;
-  overflow: hidden;
+  padding: clamp(0.75rem, 2.5vh, 2rem) 0;
+  box-sizing: border-box;
+  overflow: visible;
 
-  @media (min-width: 768px) {
-    padding: 2rem 0 1.5rem;
+  @media (max-height: 800px) {
+    justify-content: flex-start;
+    padding-top: 1rem;
+  }
+
+  @media (max-width: 767px) {
+    top: 60px;
+    height: calc(100dvh - 60px);
+    padding: 0.75rem 0;
+    justify-content: center;
   }
 `;
 
 const SectionHeader = styled.div`
   text-align: center;
   max-width: 760px;
-  margin: 0 auto 1.25rem;
-
-  @media (min-width: 768px) {
-    margin-bottom: 1.5rem;
-  }
+  margin: 0 auto clamp(0.6rem, 1.8vh, 1.25rem);
+  padding: 0 1rem;
 `;
 
 const Eyebrow = styled.p`
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: ${({ theme }) => theme.accentEmerald};
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.25rem;
+
+  @media (min-width: 768px) {
+    font-size: 0.8rem;
+    margin-bottom: 0.35rem;
+  }
 `;
 
 const SectionTitle = styled.h2`
-  font-size: clamp(1.65rem, 3.5vw, 2.75rem);
+  font-size: clamp(1.4rem, 3.2vw, 2.6rem);
   font-weight: 800;
   letter-spacing: -0.035em;
   color: ${({ theme }) => theme.textPrimary};
   line-height: 1.15;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.25rem;
+
+  @media (min-width: 768px) {
+    margin-bottom: 0.35rem;
+  }
 `;
 
 const SectionSubtitle = styled.p`
-  font-size: clamp(0.8125rem, 1.4vw, 0.9375rem);
+  font-size: clamp(0.76rem, 1.1vw, 0.9rem);
   color: ${({ theme }) => theme.textSecondary};
-  line-height: 1.45;
+  line-height: 1.35;
+  max-width: 620px;
+  margin: 0 auto;
 `;
 
 const CategoryTabs = styled.div`
   display: flex;
-  justify-content: center;
-  gap: 0.4rem;
-  margin-bottom: 1.25rem;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  margin-bottom: clamp(0.6rem, 1.8vh, 1.25rem);
   overflow-x: auto;
-  padding-bottom: 0.25rem;
+  padding: 0.2rem 0.5rem 0.35rem;
+  width: 100%;
+  max-width: 100%;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  box-sizing: border-box;
 
   &::-webkit-scrollbar {
     display: none;
   }
 
   @media (min-width: 640px) {
+    justify-content: center;
     flex-wrap: wrap;
     overflow-x: visible;
-    margin-bottom: 1.5rem;
+    padding: 0;
   }
 `;
 
 const TabButton = styled.button<{ $active: boolean }>`
-  padding: 0.35rem 0.85rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 600;
   border: 1px solid
     ${({ $active, theme }) => ($active ? theme.accentEmerald : theme.borderSubtle)};
@@ -114,9 +135,15 @@ const TabButton = styled.button<{ $active: boolean }>`
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.3rem;
   white-space: nowrap;
   flex-shrink: 0;
+
+  @media (min-width: 768px) {
+    padding: 0.4rem 0.95rem;
+    font-size: 0.78rem;
+    gap: 0.35rem;
+  }
 
   &:hover {
     border-color: ${({ theme }) => theme.accentEmerald};
@@ -125,32 +152,33 @@ const TabButton = styled.button<{ $active: boolean }>`
   }
 `;
 
-/* Central Docking Cloud Container */
+/* Dynamic Central Cloud Container - Zero Inner Scrollbars, Fully Fluid Box */
 const ChipCloudContainer = styled.div`
-  max-width: 1020px;
+  max-width: 1060px;
   width: 100%;
-  margin: 0 auto 1.25rem;
-  padding: 1.5rem 1.25rem;
-  border-radius: 24px;
+  margin: 0 auto clamp(0.6rem, 1.8vh, 1.25rem);
+  padding: clamp(0.85rem, 2vh, 1.6rem) clamp(0.75rem, 2vw, 1.75rem);
+  border-radius: 20px;
   background: ${({ theme }) =>
-    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
+    theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.025)' : 'rgba(0, 0, 0, 0.02)'};
   border: 1px solid ${({ theme }) => theme.borderSubtle};
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
+  gap: clamp(0.4rem, 0.9vw, 0.65rem);
   position: relative;
   backdrop-filter: blur(8px);
+  height: auto;
+  overflow: visible;
+  box-sizing: border-box;
 
-  @media (min-width: 640px) {
-    padding: 1.85rem 1.75rem;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+  @media (min-width: 768px) {
+    border-radius: 24px;
   }
 `;
 
-/* Alternating Left-Right Ingress Chip */
+/* Alternating Left-Right Ingress Chip with Silky Smooth Trajectory */
 const ChipPill = styled.div<{
   $isDocked: boolean;
   $side: 'left' | 'right';
@@ -158,30 +186,36 @@ const ChipPill = styled.div<{
 }>`
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 1.15rem;
+  gap: 0.4rem;
+  padding: clamp(0.35rem, 0.8vh, 0.48rem) clamp(0.7rem, 1vw, 1rem);
   border-radius: 999px;
-  font-size: clamp(0.78rem, 1.5vw, 0.9rem);
+  font-size: clamp(0.74rem, 1.1vw, 0.86rem);
   font-weight: 700;
   letter-spacing: -0.01em;
   background: ${({ theme }) => (theme.mode === 'dark' ? '#141620' : '#FFFFFF')};
   border: 1px solid ${({ theme }) => theme.borderSubtle};
   color: ${({ theme }) => theme.textPrimary};
   box-shadow: ${({ theme }) =>
-    theme.mode === 'dark' ? '0 8px 20px rgba(0,0,0,0.4)' : '0 6px 16px rgba(0,0,0,0.06)'};
+    theme.mode === 'dark' ? '0 4px 14px rgba(0,0,0,0.35)' : '0 4px 12px rgba(0,0,0,0.06)'};
   cursor: default;
   user-select: none;
   will-change: transform, opacity, filter;
 
-  /* Smooth cubic-bezier easing with zero wobble */
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.35s ease-out,
-              filter 0.35s ease-out,
+  @media (min-width: 640px) {
+    gap: 0.45rem;
+    box-shadow: ${({ theme }) =>
+      theme.mode === 'dark' ? '0 6px 16px rgba(0,0,0,0.4)' : '0 5px 14px rgba(0,0,0,0.06)'};
+  }
+
+  /* Smooth cubic-bezier docking physics */
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s ease-out,
+              filter 0.4s ease-out,
               border-color 0.25s ease,
               background-color 0.25s ease,
               box-shadow 0.3s ease;
 
-  /* Left vs Right Ingress Coordinates */
+  /* Left vs Right Ingress Motion */
   opacity: ${({ $isDocked }) => ($isDocked ? 1 : 0)};
   filter: ${({ $isDocked }) => ($isDocked ? 'blur(0px)' : 'blur(5px)')};
   pointer-events: ${({ $isDocked }) => ($isDocked ? 'auto' : 'none')};
@@ -189,47 +223,64 @@ const ChipPill = styled.div<{
     $isDocked
       ? 'translate3d(0, 0, 0) rotate(0deg) scale(1)'
       : $side === 'left'
-      ? 'translate3d(-90px, 10px, 0) rotate(-3deg) scale(0.9)'
-      : 'translate3d(90px, 10px, 0) rotate(3deg) scale(0.9)'};
+      ? 'translate3d(-80px, 12px, 0) rotate(-3deg) scale(0.9)'
+      : 'translate3d(80px, 12px, 0) rotate(3deg) scale(0.9)'};
 
   &.just-docked {
     animation: ${softLandingGlow} 0.8s ease-out;
   }
 
   &:hover {
-    transform: translateY(-4px) scale(1.08) !important;
+    transform: translateY(-3px) scale(1.06) !important;
     border-color: ${({ $accentColor }) => $accentColor} !important;
     background: ${({ $accentColor }) => $accentColor}22 !important;
-    box-shadow: 0 12px 28px -6px ${({ $accentColor }) => $accentColor}55 !important;
+    box-shadow: 0 10px 24px -4px ${({ $accentColor }) => $accentColor}55 !important;
     z-index: 50;
   }
 `;
 
 const ChipDot = styled.span<{ $color: string }>`
-  width: 7px;
-  height: 7px;
+  width: 6.5px;
+  height: 6.5px;
   border-radius: 50%;
   background: ${({ $color }) => $color};
-  box-shadow: 0 0 8px ${({ $color }) => $color};
+  box-shadow: 0 0 7px ${({ $color }) => $color};
   flex-shrink: 0;
+
+  @media (min-width: 640px) {
+    width: 7px;
+    height: 7px;
+    box-shadow: 0 0 8px ${({ $color }) => $color};
+  }
 `;
 
 const ScrollTelemetry = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
+  gap: 0.6rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.72rem;
   color: ${({ theme }) => theme.textMuted};
+  padding: 0 0.5rem;
+
+  @media (min-width: 640px) {
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    padding: 0;
+  }
 `;
 
 const ScrollBarTrack = styled.div`
-  width: 110px;
+  width: 100px;
   height: 3px;
   border-radius: 999px;
   background: ${({ theme }) => theme.borderSubtle};
   overflow: hidden;
+
+  @media (min-width: 640px) {
+    width: 120px;
+  }
 `;
 
 const ScrollBarFill = styled.div<{ $progress: number }>`
@@ -253,7 +304,7 @@ export const SkillMatrix: React.FC = () => {
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const stageRef = useRef<HTMLElement | null>(null);
 
-  // Pin-scoped scroll calculation strictly measured inside this stage
+  // Pin-scoped scroll calculation
   useEffect(() => {
     let animationFrameId: number;
 
@@ -267,7 +318,6 @@ export const SkillMatrix: React.FC = () => {
 
         if (totalScrollable <= 0) return;
 
-        // When stage top reaches 70px (under navbar), progress starts from 0 to 1
         const rawProgress = (-rect.top + 70) / totalScrollable;
         const clamped = Math.min(1, Math.max(0, rawProgress));
 
@@ -292,9 +342,8 @@ export const SkillMatrix: React.FC = () => {
     return RESUME_DATA.skillsList.filter((s) => s.category === selectedCategory);
   }, [selectedCategory]);
 
-  // Calculate visible chips count based strictly on this stage's scrollProgress
   const totalSkills = filteredSkills.length;
-  // Progress 0: 1 chip docked; Progress 0.9+: all chips docked
+  // Progressively dock chips as user scrolls
   const dockedCount = Math.min(
     totalSkills,
     Math.max(1, Math.floor(scrollProgress * (totalSkills + 1)))
@@ -303,7 +352,7 @@ export const SkillMatrix: React.FC = () => {
   return (
     <ScrollStage id="skills" ref={stageRef}>
       <StickyViewport>
-        <div className="container">
+        <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
           <SectionHeader>
             <Eyebrow>Technical Capabilities</Eyebrow>
             <SectionTitle>Core Skills & Systems</SectionTitle>
@@ -334,7 +383,7 @@ export const SkillMatrix: React.FC = () => {
 
               return (
                 <ChipPill
-                  key={skill.name}
+                  key={`${selectedCategory}-${skill.name}`}
                   $isDocked={isDocked}
                   $side={side}
                   $accentColor={skill.accentColor}
