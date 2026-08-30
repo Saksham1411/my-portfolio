@@ -228,77 +228,66 @@ export const IntroPreloader: React.FC = () => {
       scale: (i) => 0.5 + i / 600,
       ease: 'elastic.out(1.2, 0.5)',
       duration: 2.0,
-      stagger: 0.003,
+      stagger: 0.0025,
     });
 
-    // 2. Stage 2 (2.0s): Full-Viewport Edge-to-Edge Grid Distribution Matrix (power3.inOut)
+    // 2. Stage 2 (1.0s): Full-Viewport Edge-to-Edge Grid Distribution Matrix (power3.inOut)
     tl.to(chars, {
       x: (i) => (i % cols) * cellW - (cols * cellW) / 2 + cellW / 2,
       y: (i) => Math.floor(i / cols) * cellH - (rows * cellH) / 2 + cellH / 2,
       scale: (i) => 1 + (i % 5) * 0.05,
       ease: 'power3.inOut',
-      duration: 2.0,
-      stagger: -0.002,
-    }, '+=0.1');
+      duration: 1.0,
+      stagger: -0.001,
+    }, '+=0.05');
 
-    // 3. Stage 3 (2.0s): Kinetic Random Scatter & Rotate 360 (power2.inOut)
+    // 3. Stage 3 (1.0s): Kinetic Random Scatter & Rotate 360 (power2.inOut)
     tl.to(chars, {
       x: (i) => '+=' + gsap.utils.random(-i * 5 - 150, i * 5 + 150, 5),
       y: (i) => '+=' + gsap.utils.random(-i * 5 - 100, i * 5 + 100, 5),
       rotate: 360,
       ease: 'power2.inOut',
-      duration: 2.0,
-      stagger: 0.002,
-    }, '+=0.1');
+      duration: 1.0,
+      stagger: 0.001,
+    }, '+=0.05');
 
-    // 4. Stage 4 (3.0s): Secondary Spiral Recoil (power3.out)
-    tl.to(chars, {
-      opacity: 1,
-      x: (i) => (i / 2 + 20) * Math.cos(i * 5),
-      y: (i) => (i / 2 + 20) * Math.sin(i * 5),
-      scale: (i) => 0.5 + i / 600,
-      ease: 'power3.out',
-      duration: 3.0,
-      stagger: 0.003,
-    }, '+=0.1');
-
-    // 5 & 6. Stage 5 & 6 (3.0s): Silky Smooth 360° Stage Spin & Linear Snap Alignment
+    // 4. Stage 4 (1.5s): Silky Smooth 360° Stage Spin & Linear Snap Alignment
     tl.to(main, {
       rotation: 360,
       ease: 'power3.inOut',
-      duration: 3.0,
-    }, '+=0.1');
+      duration: 1.5,
+    }, '+=0.05');
 
     tl.to(chars, {
       x: (i) => ((i * 10) % 100) - 50,
       y: 0,
       scale: 1,
       ease: 'power3.out',
-      duration: 2.5,
-      stagger: 0.002,
-    }, '<+0.3');
+      duration: 1.2,
+      stagger: 0.001,
+    }, '<+0.1');
 
-    // 7. Stage 7 (1.6s): Gentle Dissolve & Velvet Centered Reveal of SAKSHAM
+    // 5. Stage 5 (0.8s): Gentle Dissolve & Velvet Centered Reveal of SAKSHAM
     tl.to(main, {
       opacity: 0,
       scale: 0.8,
-      duration: 1.0,
+      duration: 0.5,
       ease: 'power2.inOut',
-    }, '+=0.2');
+    }, '+=0.1');
 
     tl.to(finalHero, {
       opacity: 1,
       scale: 1,
-      duration: 1.2,
+      duration: 0.8,
       ease: 'power3.out',
-    }, '<+0.2');
+    }, '<+0.1');
 
-    // 8. Stage 8 (1.1s): Velvet Curtain Exit Wipe Upward after graceful 1.6s pause
+    // 6. Stage 6 (0.8s): Velvet Curtain Exit Wipe Upward after graceful 0.8s pause
     tl.to(overlay, {
       yPercent: -100,
-      duration: 1.1,
+      duration: 0.8,
       ease: 'power4.inOut',
-    }, '+=1.6');
+    }, '+=0.8');
 
     return () => {
       tl.kill();
