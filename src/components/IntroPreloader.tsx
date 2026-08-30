@@ -4,15 +4,11 @@ import gsap from 'gsap';
 
 const Overlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100dvh;
-  min-height: 100vh;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   background: #08090d;
-  z-index: 99999999;
+  z-index: 999999;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,6 +19,10 @@ const Overlay = styled.div`
   pointer-events: auto;
   touch-action: none;
   overscroll-behavior: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const AmbientGlow = styled.div`
@@ -53,14 +53,17 @@ const BgGrid = styled.div`
 
 const SpiralViewport = styled.div`
   position: relative;
-  width: 100vw;
-  height: 100dvh;
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   perspective: 1200px;
   overflow: hidden;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const MainContainer = styled.div`
@@ -139,49 +142,29 @@ const FinalSubtitle = styled.p`
 
 const WORD = 'SAKSHAM';
 
-export const IntroPreloader: React.FC<{ onComplete?: () => void }> = ({ onComplete }) => {
+export const IntroPreloader: React.FC = () => {
   const [isHidden, setIsHidden] = useState(false);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLDivElement | null>(null);
   const finalHeroRef = useRef<HTMLDivElement | null>(null);
-  const onCompleteRef = useRef(onComplete);
 
   useEffect(() => {
-    onCompleteRef.current = onComplete;
-  }, [onComplete]);
+    // Hide scrollbars and prevent scrolling during preloader
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
 
-  useEffect(() => {
-    // Strict Full-Page Scroll Lock
     const preventScroll = (e: Event) => {
       e.preventDefault();
-      e.stopPropagation();
     };
-
-    const preventKeyScroll = (e: KeyboardEvent) => {
-      const keys = ['ArrowUp', 'ArrowDown', 'Space', 'PageUp', 'PageDown', 'Home', 'End'];
-      if (keys.includes(e.code) || keys.includes(e.key)) {
-        e.preventDefault();
-      }
-    };
-
-    window.scrollTo(0, 0);
-    document.documentElement.classList.add('is-preloading');
-    document.body.classList.add('is-preloading');
 
     window.addEventListener('wheel', preventScroll, { passive: false });
     window.addEventListener('touchmove', preventScroll, { passive: false });
-    window.addEventListener('keydown', preventKeyScroll, { passive: false });
 
     const unlockScroll = () => {
-      document.documentElement.classList.remove('is-preloading');
-      document.body.classList.remove('is-preloading');
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
       window.removeEventListener('wheel', preventScroll);
       window.removeEventListener('touchmove', preventScroll);
-      window.removeEventListener('keydown', preventKeyScroll);
-      window.scrollTo(0, 0);
-      if (onCompleteRef.current) {
-        onCompleteRef.current();
-      }
     };
 
     const overlay = overlayRef.current;

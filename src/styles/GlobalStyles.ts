@@ -12,9 +12,6 @@ export const GlobalStyles = createGlobalStyle`
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
   }
 
   body {
@@ -22,33 +19,8 @@ export const GlobalStyles = createGlobalStyle`
     color: ${({ theme }) => theme.textPrimary};
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
     transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  /* Preloader Lock: 100% Guaranteed zero scroll & zero gap peek on mobile */
-  html.is-preloading,
-  body.is-preloading {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100dvh !important;
-    overflow: hidden !important;
-    touch-action: none !important;
-    overscroll-behavior: none !important;
-    -webkit-overflow-scrolling: auto !important;
-  }
-
-  body.is-preloading #main-content,
-  body.is-preloading header,
-  body.is-preloading footer {
-    visibility: hidden !important;
-    pointer-events: none !important;
   }
 
   ::selection {
